@@ -1,0 +1,77 @@
+.hero {
+  --focus: 86% 45%;                 /* mobile focal point: the athlete is on the right */
+  padding-top: calc(var(--header-h) + 16px);
+  padding-bottom: clamp(32px, 6vw, 96px);
+}
+
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 24px;
+}
+.hero__meta span:nth-child(2) { color: var(--muted); }
+.hero__meta span:nth-child(3) { display: none; }
+
+.hero__title { font-size: clamp(2rem, 8.6vw, 13rem); }
+
+.hero__foot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 24px;
+}
+.hero__excerpt {
+  max-width: 38ch;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hero__cta {
+  padding-block: 12px 4px;
+  border-bottom: 1px solid var(--ink);
+  white-space: nowrap;
+  transition: color 0.3s, border-color 0.3s;
+}
+.hero__cta:hover { color: var(--accent); border-color: var(--accent); }
+
+.hero__media { margin-top: 28px; }
+.hero__media-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 78vh;
+  overflow: hidden;
+  background: var(--media-bg);
+}
+.hero__parallax { position: absolute; left: 0; width: 100%; top: -10%; height: 120%; }
+.hero__img { will-change: transform; object-position: var(--focus); }
+
+/* small tablets */
+@media (min-width: 640px) {
+  .hero { --focus: 78% 45%; }
+  .hero__meta span:nth-child(3) { display: inline; }
+  .hero__foot { flex-direction: row; justify-content: space-between; align-items: flex-end; gap: 32px; margin-top: 32px; }
+  .hero__media { margin-top: 40px; }
+  .hero__media-inner { aspect-ratio: 4 / 3; }
+}
+
+/* laptops and desktops */
+@media (min-width: 900px) {
+  .hero { --focus: 50% 35%; }
+  .hero__meta { margin-bottom: clamp(24px, 4vw, 56px); }
+  .hero__title { font-size: clamp(3rem, 11vw, 13rem); }
+  .hero__foot { margin-top: clamp(24px, 3vw, 48px); }
+  .hero__media { margin-top: clamp(32px, 5vw, 72px); }
+  .hero__media-inner { aspect-ratio: auto; height: 75vh; min-height: 480px; max-height: none; }
+}
+
+.hero__title { overflow-wrap: break-word; }
+
+.hero__title { overflow-wrap: break-word; }
