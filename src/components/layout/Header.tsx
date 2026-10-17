@@ -7,8 +7,15 @@ import MenuOverlay from "./MenuOverlay";
 import MegaMenu from "./MegaMenu";
 import ThemeSwitch from "@/components/ui/ThemeSwitch";
 import type { DepartmentData } from "@/lib/departments";
+import type { MenuItem } from "@/lib/menu";
 
-export default function Header({ departments }: { departments: DepartmentData[] }) {
+export default function Header({
+  departments,
+  menuItems,
+}: {
+  departments: DepartmentData[];
+  menuItems: MenuItem[];
+}) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const timer = useRef<number | undefined>(undefined);
@@ -118,7 +125,7 @@ export default function Header({ departments }: { departments: DepartmentData[] 
         {!open && <MegaMenu items={departments} active={active} onNavigate={() => show(null)} />}
       </div>
 
-      <MenuOverlay open={open} onNavigate={() => setOpen(false)} />
+      <MenuOverlay open={open} items={menuItems} onNavigate={() => setOpen(false)} />
     </>
   );
 }

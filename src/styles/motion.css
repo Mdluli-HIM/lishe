@@ -1,0 +1,90 @@
+::selection { background: var(--accent); color: var(--bg); }
+
+/* ---------- reading progress ---------- */
+.progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  z-index: 110;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* ---------- header tucks away while scrolling down ---------- */
+html .header {
+  transition: background 0.5s var(--ease), color 0.5s var(--ease), border-color 0.5s var(--ease),
+    transform 0.6s var(--ease);
+}
+html[data-header="hidden"] .header { transform: translateY(-101%); }
+html[data-header="hidden"] .header.is-open { transform: none; }
+html[data-header="hidden"] .mega,
+html[data-header="hidden"] .mega-backdrop { opacity: 0; pointer-events: none; }
+
+/* ---------- page transition panel ---------- */
+.pt {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  color: var(--bg);
+  clip-path: inset(100% 0 0 0);
+  visibility: hidden;
+  pointer-events: none;
+}
+html[data-transition] .pt { pointer-events: all; }
+.pt__mask { overflow: hidden; padding: 0.12em 0.25em; }
+.pt__label {
+  display: block;
+  font-family: var(--font-serif), serif;
+  font-style: italic;
+  font-size: clamp(3.5rem, 14vw, 12rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+/* ---------- cursor follower ---------- */
+.cursor { display: none; }
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cursor {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 500;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    color: var(--bg);
+    pointer-events: none;
+    opacity: 0;
+    transition: width 0.45s var(--ease), height 0.45s var(--ease), background 0.3s,
+      border-color 0.3s, opacity 0.3s;
+  }
+  .cursor[data-on="1"] { opacity: 1; }
+  .cursor[data-state="link"] { width: 56px; height: 56px; border-color: var(--accent); }
+  .cursor[data-state="card"] { width: 96px; height: 96px; background: var(--accent); border-color: var(--accent); }
+  .cursor[data-state="quiet"] { opacity: 0 !important; }
+  .cursor__label { opacity: 0; transition: opacity 0.3s; }
+  .cursor[data-state="card"] .cursor__label { opacity: 1; }
+}
+
+/* ---------- focus hovers: everything else steps back ---------- */
+@media (hover: hover) {
+  .cat__link { transition: color 0.4s var(--ease), opacity 0.5s var(--ease); }
+  .cat__list:hover .cat__link:not(:hover) { opacity: 0.28; }
+
+  .fg__link { transition: opacity 0.5s var(--ease); }
+  .fg__grid:hover .fg__link:not(:hover) { opacity: 0.5; }
+
+  .menu__links a { transition: opacity 0.4s var(--ease); }
+  .menu__links:hover a:not(:hover) { opacity: 0.28; }
+  .menu__links .display { transition: transform 0.6s var(--ease), color 0.3s; }
+  .menu__links a:hover .display { transform: translateX(1.2vw); }
+}

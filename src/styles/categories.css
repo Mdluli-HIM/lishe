@@ -87,3 +87,43 @@
 @media (min-width: 900px) {
   .cat__count { flex-direction: column; gap: 4px; }
 }
+
+/* ---------- cursor-following image ---------- */
+.cat__float { display: none; }
+
+@media (min-width: 900px) and (hover: hover) {
+  .cat__float {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    width: clamp(260px, 24vw, 440px);
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--media-bg);
+    pointer-events: none;
+    will-change: transform;
+    visibility: hidden;
+    opacity: 0;
+  }
+  .cat__float-img {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.18);
+    transition: opacity 0.4s var(--ease), transform 0.9s var(--ease);
+  }
+  .cat__float-img.is-active { opacity: 1; transform: none; }
+
+  /* the floating card replaces the static thumbnail; keep the latest-story line visible */
+  .cat__thumb { display: none; }
+  .cat__peek { align-self: center; }
+  .cat__latest {
+    opacity: 1 !important;
+    transform: none !important;
+    color: var(--muted);
+    transition: color 0.3s;
+  }
+  .cat__link:hover .cat__latest { color: var(--accent); }
+}

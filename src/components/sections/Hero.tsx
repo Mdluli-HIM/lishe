@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { whenEntered } from "@/lib/intro";
 import SplitHeadline from "@/components/ui/SplitHeadline";
 import { longDate } from "@/lib/format";
 import type { Post } from "@/types/post";
@@ -26,22 +27,25 @@ export default function Hero({
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
-    () => {
-      gsap.from(".hero__media-inner", {
-        clipPath: "inset(0 0 100% 0)",
-        duration: 1.4,
-        ease: "power4.inOut",
-        delay: 0.3,
+    (_, contextSafe) => {
+      const play = contextSafe!(() => {
+        gsap.from(".hero__media-inner", {
+          clipPath: "inset(0 0 100% 0)",
+          duration: 1.4,
+          ease: "power4.inOut",
+          delay: 0.3,
+        });
+        gsap.from(".hero__img", { scale: 1.15, duration: 1.8, ease: "power3.out", delay: 0.3 });
+        gsap.from(".hero__fade", { opacity: 0, y: 12, duration: 0.8, stagger: 0.08, delay: 0.9 });
       });
-      gsap.from(".hero__img", { scale: 1.15, duration: 1.8, ease: "power3.out", delay: 0.3 });
-      gsap.from(".hero__fade", { opacity: 0, y: 12, duration: 0.8, stagger: 0.08, delay: 0.9 });
 
-      // parallax stays inside the 10% overscan, so no gap can appear
       gsap.to(".hero__parallax", {
         yPercent: 7,
         ease: "none",
         scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
       });
+
+      return whenEntered(play);
     },
     { scope: root }
   );

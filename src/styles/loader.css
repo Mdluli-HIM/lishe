@@ -1,0 +1,107 @@
+/* hidden unless the head script switches the intro on (so no-JS visitors never get stuck) */
+.loader {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--bg);
+  color: var(--ink);
+  clip-path: inset(0 0 0 0);
+  overflow: hidden;
+}
+html[data-intro="on"] .loader,
+html[data-intro="exiting"] .loader { display: block; }
+html[data-intro="on"],
+html[data-intro="on"] body { overflow: hidden; }
+
+.loader__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 3vh, 28px);
+  padding: 72px var(--gutter) 64px;
+}
+
+.loader__logo {
+  position: absolute;
+  top: max(20px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+}
+.loader__logo img { height: 40px; width: auto; }
+.loader__logo-light { display: none; }
+:root[data-theme="dark"] .loader__logo-dark { display: none; }
+:root[data-theme="dark"] .loader__logo-light { display: block; }
+
+/* the heart */
+.loader__beat {
+  width: min(72vw, 46vh, 460px);
+  aspect-ratio: 1;
+  will-change: transform;
+}
+:root:not([data-theme="dark"]) .loader__beat { mix-blend-mode: multiply; }
+
+.loader__art {
+  width: 100%;
+  height: 100%;
+  clip-path: circle(0% at 50% 50%);
+}
+.loader__art img { width: 100%; height: 100%; object-fit: contain; }
+
+/* Night: artwork sits on a soft cream plate so white edges never glare */
+:root[data-theme="dark"] .loader__art { background: #ece7db; border-radius: 28px; }
+:root[data-theme="dark"] .loader__art img { mix-blend-mode: multiply; }
+
+/* pulse line */
+.loader__ecg { width: min(78vw, 520px); height: auto; overflow: visible; }
+.loader__ecg path { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.loader__ecg-track { stroke-width: 1; opacity: 0.14; }
+.loader__ecg-line { stroke-width: 1.5; stroke: var(--accent); stroke-dasharray: 2000; stroke-dashoffset: 2000; }
+
+/* words, then the Enter button in the same spot */
+.loader__status {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 64px;
+}
+.loader__word,
+.loader__enter { grid-area: 1 / 1; }
+
+.loader__word {
+  font-family: var(--font-serif), serif;
+  font-style: italic;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  letter-spacing: -0.02em;
+  opacity: 0;
+}
+
+.loader__enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 14px 32px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+@media (hover: hover) {
+  .loader__enter:hover { background: var(--ink); color: var(--bg); }
+}
+
+.loader__foot {
+  position: absolute;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: var(--muted);
+}

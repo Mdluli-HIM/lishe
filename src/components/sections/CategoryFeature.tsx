@@ -8,14 +8,13 @@ import { shortDate } from "@/lib/format";
 import type { Post } from "@/types/post";
 
 export interface CategoryFeatureProps {
-  index?: string;          // "01"
-  deptKey: string;        // "fitness"
-  label: string;          // "Fitness"
-  headline: string[];     // ["Move", "better.", "Live", "stronger."]
+  deptKey: string;
+  label: string;
+  headline: string[];
   featured: Post;
   latest: Post[];
   topics: string[];
-  reverse?: boolean;      // flips image/text sides
+  reverse?: boolean;
 }
 
 export default function CategoryFeature({
@@ -31,14 +30,12 @@ export default function CategoryFeature({
 
   useGSAP(
     () => {
-      const trigger = { trigger: root.current, start: "top 70%" };
-
       gsap.from(".cf__line > span", {
         yPercent: 110,
         duration: 1.1,
         ease: "power4.out",
         stagger: 0.09,
-        scrollTrigger: trigger,
+        scrollTrigger: { trigger: ".cf__headline", start: "top 88%", once: true },
       });
 
       gsap.from(".cf__fade", {
@@ -47,13 +44,13 @@ export default function CategoryFeature({
         duration: 0.9,
         ease: "power3.out",
         stagger: 0.07,
-        scrollTrigger: { trigger: ".cf__side", start: "top 80%" },
+        scrollTrigger: { trigger: ".cf__side", start: "top 88%", once: true },
       });
 
       const mm = gsap.matchMedia();
       mm.add("(min-width: 901px)", () => {
         gsap.to(".cf__media", {
-          y: -70,
+          y: -50,
           ease: "none",
           scrollTrigger: { trigger: ".cf__media", start: "top bottom", end: "bottom top", scrub: true },
         });

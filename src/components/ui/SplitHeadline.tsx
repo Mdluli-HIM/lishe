@@ -2,8 +2,9 @@
 
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { whenEntered } from "@/lib/intro";
 
-/** Each line of `lines` slides up from a mask on mount. */
+/** Each line of `lines` slides up from a mask once the visitor has entered. */
 export default function SplitHeadline({
   lines,
   className = "display display--xl",
@@ -18,14 +19,17 @@ export default function SplitHeadline({
   const ref = useRef<HTMLHeadingElement>(null);
 
   useGSAP(
-    () => {
-      gsap.from(".line > span", {
-        yPercent: 110,
-        duration: 1.1,
-        ease: "power4.out",
-        stagger: 0.08,
-        delay,
+    (_, contextSafe) => {
+      const play = contextSafe!(() => {
+        gsap.from(".line > span", {
+          yPercent: 110,
+          duration: 1.1,
+          ease: "power4.out",
+          stagger: 0.08,
+          delay,
+        });
       });
+      return whenEntered(play);
     },
     { scope: ref }
   );

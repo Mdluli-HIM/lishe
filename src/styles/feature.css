@@ -81,3 +81,33 @@
   .cf__row:hover .cf__arrow { transform: translateX(4px); }
   .cf__feature:hover .reveal__img { scale: 1.04; }
 }
+
+/* tighter rhythm, smaller headline: presence without a screen of white */
+.cf { padding-block: 40px; }
+.cf__headline { margin-block: 12px 24px; }
+@media (min-width: 640px) {
+  .cf { padding-block: 56px; }
+  .cf__headline { font-size: clamp(3rem, 10vw, 7rem); margin-block: 16px 32px; }
+}
+@media (min-width: 900px) {
+  .cf { padding-block: clamp(48px, 6vw, 96px); }
+  .cf__headline {
+    font-size: clamp(3.5rem, 9vw, 10.5rem);
+    margin-block: clamp(16px, 2vw, 32px) clamp(28px, 4vw, 56px);
+  }
+}
+
+/* tighter rhythm, smaller headline: presence without a screen of white */
+.cf { padding-block: 40px; }
+.cf__headline { margin-block: 12px 24px; }
+@media (min-width: 640px) {
+  .cf { padding-block: 56px; }
+  .cf__headline { font-size: clamp(3rem, 10vw, 7rem); margin-block: 16px 32px; }
+}
+@media (min-width: 900px) {
+  .cf { padding-block: clamp(48px, 6vw, 96px); }
+  .cf__headline {
+    font-size: clamp(3.5rem, 9vw, 10.5rem);
+    margin-block: clamp(16px, 2vw, 32px) clamp(28px, 4vw, 56px);
+  }
+}

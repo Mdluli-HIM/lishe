@@ -1,8 +1,6 @@
 :root {
   --media-bg: #d9d4c7;
   --media-bg-2: #b9b3a2;
-  --menu-bg: #111110;
-  --menu-fg: #f4f1ea;
   --backdrop: rgba(17, 17, 16, 0.38);
   color-scheme: light;
 }
@@ -15,8 +13,6 @@
   --accent: #a8441f;
   --media-bg: #e2d5b8;
   --media-bg-2: #cfc0a0;
-  --menu-bg: #2b2218;
-  --menu-fg: #f1e7d0;
   --backdrop: rgba(43, 34, 24, 0.45);
 }
 
@@ -28,8 +24,6 @@
   --accent: #e57a56;
   --media-bg: #1f1e1c;
   --media-bg-2: #2a2927;
-  --menu-bg: #0b0b0a;
-  --menu-fg: #dcd8ce;
   --backdrop: rgba(0, 0, 0, 0.6);
   color-scheme: dark;
 }
@@ -118,3 +112,16 @@ html { transition: background-color 0.4s ease, color 0.4s ease; }
 .theme--inline .theme__opt:hover { color: inherit; opacity: 1; }
 
 .menu__theme { display: flex; flex-direction: column; gap: 14px; }
+
+/* the full-screen menu uses the current mode's own colours */
+:root {
+  --menu-bg: var(--bg);
+  --menu-fg: var(--ink);
+}
+
+/* compact, icon-only toggle on phones and tablets */
+@media (max-width: 899px) {
+  .theme__text { display: none; }
+  .theme__btn { min-width: 44px; justify-content: center; }
+  .theme__icon { width: 16px; height: 16px; }
+}

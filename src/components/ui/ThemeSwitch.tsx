@@ -86,10 +86,11 @@ export default function ThemeSwitch({ variant = "popover" }: { variant?: "popove
         className="theme__btn label"
         aria-expanded={open}
         aria-haspopup="true"
+        aria-label="Read mode"
         onClick={() => setOpen((v) => !v)}
       >
         <span className="theme__icon" aria-hidden />
-        Read mode
+        <span className="theme__text">Read mode</span>
       </button>
       {group}
     </div>

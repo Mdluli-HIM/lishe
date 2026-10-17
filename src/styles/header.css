@@ -44,9 +44,9 @@
   justify-content: space-between;
   gap: 40px;
 }
-.menu__links { list-style: none; border-top: 1px solid rgba(244, 241, 234, 0.2); }
+.menu__links { list-style: none; border-top: 1px solid var(--rule); }
 .menu__links li {
-  border-bottom: 1px solid rgba(244, 241, 234, 0.2);
+  border-bottom: 1px solid var(--rule);
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
@@ -95,8 +95,6 @@
 .header__logo { padding-block: 6px; }
 .header__logo img { height: 40px; width: auto; }
 .header__logo-light { display: none !important; }
-.header.is-open .header__logo-dark { display: none; }
-.header.is-open .header__logo-light { display: block !important; }
 
 @media (min-width: 900px) {
   .header__logo img { height: 48px; }
@@ -109,3 +107,61 @@
   .header__theme { display: block; }
 }
 .header.is-open .header__theme { display: none; }
+
+.header__theme { display: block; }
+.header__right { gap: 8px; }
+@media (min-width: 900px) {
+  .header__right { gap: 20px; }
+}
+
+/* ---------- menu rows: word + photo ---------- */
+.menu__links a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+.menu__links .display { font-size: clamp(2rem, 10.5vw, 7rem); }
+
+.menu__thumb {
+  position: relative;
+  display: block;
+  width: clamp(72px, 22vw, 160px);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--media-bg);
+}
+
+.menu__float { display: none; }
+
+:root[data-theme="dark"] .menu img { filter: brightness(0.86) saturate(0.95); }
+
+/* desktop with a mouse: the floating photo replaces the thumbnails */
+@media (min-width: 900px) and (hover: hover) {
+  .menu__links a { display: flex; align-items: baseline; gap: 24px; }
+  .menu__thumb { display: none; }
+
+  .menu__float {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    width: clamp(260px, 24vw, 440px);
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--media-bg);
+    pointer-events: none;
+    will-change: transform;
+    visibility: hidden;
+    opacity: 0;
+  }
+  .menu__float-img {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.18);
+    transition: opacity 0.4s var(--ease), transform 0.9s var(--ease);
+  }
+  .menu__float-img.is-active { opacity: 1; transform: none; }
+}
