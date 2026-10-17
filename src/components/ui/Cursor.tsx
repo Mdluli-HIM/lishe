@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 
-const CARDS = ".fg__link, .cf__feature, .cf__lead, .mega__card";
+const CARDS = ".fg__link, .st__link, .st__t--on, .rl__card, .cf__feature, .cf__lead, .mega__card";
 const QUIET = ".cat__link, .menu__links a";
 
 export default function Cursor() {

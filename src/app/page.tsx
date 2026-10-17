@@ -1,6 +1,6 @@
 import Hero from "@/components/sections/Hero";
 import CategoryIndex from "@/components/sections/CategoryIndex";
-import FeaturedGrid from "@/components/sections/FeaturedGrid";
+import StoryStage from "@/components/sections/StoryStage";
 import CategoryFeature from "@/components/sections/CategoryFeature";
 import { getPosts } from "@/lib/wp";
 import { getDepartments } from "@/lib/departments";
@@ -17,7 +17,7 @@ export default async function Home() {
     <main>
       <Hero post={featured} image={HERO_IMAGE} />
       <CategoryIndex items={departments} />
-      <FeaturedGrid posts={rest.slice(0, 5)} />
+      <StoryStage posts={rest.slice(0, 5)} />
 
       {fitness && fitness.posts.length > 0 && (
         <CategoryFeature
