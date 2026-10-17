@@ -8,19 +8,26 @@ const WORDS = ["Nourish", "Move", "Live"];
 const ECG =
   "M0 30 H190 l10 -6 l10 6 H255 l9 -26 l13 52 l11 -26 H345 l12 -9 l12 9 H600";
 
+/** Seconds: the line draws, wipes away, rests, then repeats until the visitor enters. */
+const DRAW = 2.2;
+const ERASE = 1.3;
+const REST = 0.4;
+
 export default function Loader() {
   const root = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const path = useRef<SVGPathElement>(null);
+  const dot = useRef<SVGCircleElement>(null);
   const btn = useRef<HTMLButtonElement>(null);
   const entered = useRef(false);
 
-  useGSAP(
+  const { context } = useGSAP(
     () => {
       if (document.documentElement.dataset.intro !== "on") return;
 
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const p = path.current!;
+      const d = dot.current!;
       const len = p.getTotalLength();
       gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
       let cancelled = false;
@@ -50,7 +57,7 @@ export default function Loader() {
 
       if (reduce) {
         gsap.set(".loader__art", { clipPath: "circle(75% at 50% 50%)" });
-        gsap.set(p, { strokeDashoffset: 0 });
+        p.style.strokeDashoffset = "0";
         loaded.then(showEnter);
         return () => {
           cancelled = true;
@@ -81,9 +88,40 @@ export default function Loader() {
           .to(w, { opacity: 0, yPercent: -40, duration: 0.35, ease: "power2.in" }, "+=0.55");
       });
 
-      // the pulse line draws in; progress = this line, no numbers
-      const minTime = new Promise<void>((resolve) => {
-        gsap.to(p, { strokeDashoffset: 0, duration: 2.8, delay: 0.4, ease: "power1.inOut", onComplete: resolve });
+      // the pulse line loops for as long as the loader is on screen
+      const easeDraw = gsap.parseEase("power1.inOut");
+      const easeErase = gsap.parseEase("power1.in");
+      const total = DRAW + ERASE + REST;
+      let firstDraw: () => void = () => {};
+      const minTime = new Promise<void>((resolve) => (firstDraw = resolve));
+
+      const state = { t: 0 };
+      gsap.to(state, {
+        t: 1,
+        duration: total,
+        ease: "none",
+        repeat: -1,
+        delay: 0.4,
+        onUpdate: () => {
+          const time = state.t * total;
+
+          if (time < DRAW) {
+            const k = easeDraw(time / DRAW);
+            p.style.strokeDashoffset = String(len * (1 - k));
+            const pt = p.getPointAtLength(k * len);
+            d.setAttribute("cx", String(pt.x));
+            d.setAttribute("cy", String(pt.y));
+            d.style.opacity = "1";
+          } else if (time < DRAW + ERASE) {
+            firstDraw();
+            const k = easeErase((time - DRAW) / ERASE);
+            p.style.strokeDashoffset = String(-len * k);
+            d.style.opacity = "0";
+          } else {
+            p.style.strokeDashoffset = String(-len);
+            d.style.opacity = "0";
+          }
+        },
       });
 
       Promise.all([minTime, loaded]).then(() => {
@@ -109,7 +147,12 @@ export default function Loader() {
     window.dispatchEvent(new Event("lishe-enter"));
 
     gsap
-      .timeline({ onComplete: () => { html.dataset.intro = "done"; } })
+      .timeline({
+        onComplete: () => {
+          html.dataset.intro = "done";
+          context.kill(); // stop the pulse line, heartbeat and word loops
+        },
+      })
       .to(content.current, { scale: 1.05, opacity: 0, duration: 0.7, ease: "power2.in" }, 0)
       .to(root.current, { clipPath: "inset(0 0 100% 0)", duration: 1.1, ease: "power4.inOut" }, 0.2);
   };
@@ -131,6 +174,7 @@ export default function Loader() {
         <svg className="loader__ecg" viewBox="0 0 600 60" aria-hidden>
           <path d={ECG} className="loader__ecg-track" />
           <path ref={path} d={ECG} className="loader__ecg-line" />
+          <circle ref={dot} className="loader__ecg-dot" r="3.5" cx="0" cy="30" />
         </svg>
 
         <div className="loader__status">
