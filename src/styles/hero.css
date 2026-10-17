@@ -75,3 +75,16 @@
 .hero__title { overflow-wrap: break-word; }
 
 .hero__title { overflow-wrap: break-word; }
+
+/* phones: landscape frame, centred focus, smaller parallax overscan so nothing is cropped */
+@media (max-width: 639px) {
+  .hero { --focus: 50% 50%; }
+  .hero__media-inner { aspect-ratio: 4 / 3; max-height: none; }
+  .hero__parallax { top: -5%; height: 110%; }
+}
+
+/* small tablets: same centred focus */
+@media (min-width: 640px) and (max-width: 899px) {
+  .hero { --focus: 50% 45%; }
+  .hero__parallax { top: -5%; height: 110%; }
+}
