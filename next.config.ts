@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const config: NextConfig = {
   turbopack: { root: process.cwd() },
+  outputFileTracingIncludes: {
+    "/**": ["./public/images/**/*"],
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "lishe.co.za" },
