@@ -42,7 +42,6 @@ html[data-intro="on"] body { overflow: hidden; }
   aspect-ratio: 1;
   will-change: transform;
 }
-:root:not([data-theme="dark"]) .loader__beat { mix-blend-mode: multiply; }
 
 .loader__art {
   width: 100%;
@@ -51,9 +50,6 @@ html[data-intro="on"] body { overflow: hidden; }
 }
 .loader__art img { width: 100%; height: 100%; object-fit: contain; }
 
-/* Night: artwork sits on a soft cream plate so white edges never glare */
-:root[data-theme="dark"] .loader__art { background: #ece7db; border-radius: 28px; }
-:root[data-theme="dark"] .loader__art img { mix-blend-mode: multiply; }
 
 /* pulse line */
 .loader__ecg { width: min(78vw, 520px); height: auto; overflow: visible; }

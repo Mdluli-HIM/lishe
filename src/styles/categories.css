@@ -127,3 +127,12 @@
   }
   .cat__link:hover .cat__latest { color: var(--accent); }
 }
+
+/* phones and touch tablets: landscape thumbnails so photos aren't cropped */
+@media (max-width: 899px) {
+  .cat__thumb { aspect-ratio: 4 / 3; }
+  .cat__link { grid-template-columns: minmax(0, 1fr) 120px; }
+}
+@media (min-width: 640px) and (max-width: 899px) {
+  .cat__link { grid-template-columns: minmax(0, 1fr) 190px; }
+}
