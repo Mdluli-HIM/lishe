@@ -12,6 +12,7 @@ export default function StoryStage({ posts }: { posts: Post[] }) {
   const root = useRef<HTMLElement>(null);
   const scroll = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
+  const last = useRef(0);
   const [active, setActive] = useState(0);
 
   const items = posts.slice(0, 5);
@@ -19,27 +20,25 @@ export default function StoryStage({ posts }: { posts: Post[] }) {
 
   useGSAP(
     () => {
-      const mm = gsap.matchMedia();
+      const el = scroll.current;
+      const st = stage.current;
+      if (!el || !st || n === 0) return;
 
-      mm.add("(min-width: 900px)", () => {
-        const el = scroll.current;
-        const st = stage.current;
-        if (!el || !st || n === 0) return;
-
-        const trigger = ScrollTrigger.create({
-          trigger: el,
-          start: "top top",
-          end: "bottom bottom",
-          onUpdate: (self) => {
-            st.style.setProperty("--p", String(self.progress));
-            const i = Math.min(n - 1, Math.floor(self.progress * n));
-            setActive((prev) => (prev === i ? prev : i));
-          },
-        });
-        return () => trigger.kill();
+      const trigger = ScrollTrigger.create({
+        trigger: el,
+        start: "top top",
+        end: "bottom bottom",
+        onUpdate: (self) => {
+          st.style.setProperty("--p", String(self.progress));
+          const i = Math.min(n - 1, Math.floor(self.progress * n));
+          if (i !== last.current) {
+            last.current = i;
+            setActive(i);
+            if (window.matchMedia("(hover: none)").matches) navigator.vibrate?.(8);
+          }
+        },
       });
-
-      return () => mm.revert();
+      return () => trigger.kill();
     },
     { scope: root, dependencies: [n] }
   );
@@ -58,6 +57,7 @@ export default function StoryStage({ posts }: { posts: Post[] }) {
 
   if (n === 0) return null;
   const current = items[active] ?? items[0];
+  const next = items[active + 1];
   const href = `/stories/${current.slug}`;
 
   return (
@@ -65,39 +65,17 @@ export default function StoryStage({ posts }: { posts: Post[] }) {
       <div className="wrap">
         <div className="st__head label">
           <span>Featured stories</span>
-          <span className="st__hint st__hint--touch">Swipe →</span>
-          <span className="st__hint st__hint--desk">Scroll ↓</span>
+          <span>Scroll ↓</span>
         </div>
       </div>
 
-      {/* phones and touch tablets: swipe reel */}
-      <ul className="rl">
-        {items.map((p, i) => (
-          <li key={p.id} className="rl__item">
-            <Link href={`/stories/${p.slug}`} className="rl__card">
-              <span className={`rl__img rl__img--${i % 2 ? "b" : "a"}`}>
-                {p.image ? (
-                  <Image src={p.image.src} alt={p.image.alt} fill sizes="80vw" style={{ objectFit: "cover" }} />
-                ) : (
-                  <span className="st__ph" />
-                )}
-              </span>
-              <span className="label rl__meta">
-                {p.category} / {shortDate(p.date)} / {p.readingMinutes} min
-              </span>
-              <span className="rl__title">{p.title}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-
-      {/* desktop: pinned story stage */}
       <div ref={scroll} className="st__scroll" style={{ ["--n" as string]: n }}>
         <div ref={stage} className="st__stage wrap">
           <div className="st__left">
+            {/* desktop: headline list with the rust progress line */}
             <div className="st__titles">
               <span className="st__fill" aria-hidden />
-              {items.map((p, i) => (
+              {items.map((p, i) =>
                 i === active ? (
                   <Link
                     key={p.id}
@@ -112,17 +90,30 @@ export default function StoryStage({ posts }: { posts: Post[] }) {
                     <span className="st__tt">{p.title}</span>
                   </button>
                 )
-              ))}
+              )}
             </div>
 
             <div key={current.id} className="st__detail">
               <span className="label st__meta">
                 {current.category} / {shortDate(current.date)} / {current.readingMinutes} min
               </span>
+              <span className="st__dtitle">{current.title}</span>
               <p className="st__excerpt">{current.excerpt}</p>
               <Link href={href} className="label st__more">
                 Read the story →
               </Link>
+
+              {/* phones: a peek at what comes next */}
+              <div className="st__next label">
+                {next ? (
+                  <>
+                    <span>Next</span>
+                    <span className="st__nexttitle">{next.title}</span>
+                  </>
+                ) : (
+                  <span>Keep scrolling ↓</span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -152,6 +143,23 @@ export default function StoryStage({ posts }: { posts: Post[] }) {
                 <span className="label st__side">{current.category}</span>
               </div>
             </Link>
+
+            {/* phones: tappable progress segments, like stories */}
+            <div className="st__segs">
+              {items.map((p, i) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  className="st__seg"
+                  aria-label={`Show story: ${p.title}`}
+                  aria-current={i === active ? "true" : undefined}
+                  style={{ ["--i" as string]: i }}
+                  onClick={() => go(i)}
+                >
+                  <span />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

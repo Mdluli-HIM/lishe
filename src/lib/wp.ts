@@ -5,11 +5,25 @@ import { localStoryImage } from "@/lib/local-images";
 
 const API = "https://lishe.co.za/wp-json/wp/v2";
 
+const NAMED: Record<string, string> = {
+  amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ",
+  hellip: "…", ndash: "–", mdash: "—",
+  rsquo: "’", lsquo: "‘", rdquo: "”", ldquo: "“",
+};
+
+const decodeEntity = (m: string) => {
+  const body = m.slice(1, -1);
+  if (body[0] === "#") {
+    const code = body[1].toLowerCase() === "x" ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
+    return Number.isFinite(code) ? String.fromCodePoint(code) : " ";
+  }
+  return NAMED[body.toLowerCase()] ?? " ";
+};
+
 const strip = (html: string) =>
   html
     .replace(/<[^>]+>/g, "")
-    .replace(/&amp;/g, "&")
-    .replace(/&#?\w+;/g, " ")
+    .replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, decodeEntity)
     .replace(/\s+/g, " ")
     .trim();
 
