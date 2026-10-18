@@ -11,6 +11,13 @@ const config: NextConfig = {
       { protocol: "https", hostname: "**.wp.com" },
     ],
   },
+  async redirects() {
+    return [
+      { source: "/nutrition", destination: "/explore/nourish", permanent: false },
+      { source: "/fitness", destination: "/explore/move", permanent: false },
+      { source: "/lifestyle", destination: "/explore/live", permanent: false },
+    ];
+  },
 };
 
 export default config;

@@ -22,7 +22,7 @@ const serif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Lishe — Nutrition, Fitness & Lifestyle",
+  title: "Lishe — Nourish, Move, Live",
   description: "A South African wellness and lifestyle publication.",
 };
 

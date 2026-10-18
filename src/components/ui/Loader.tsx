@@ -188,7 +188,7 @@ export default function Loader() {
           </button>
         </div>
 
-        <p className="loader__foot label">Nutrition · Fitness · Lifestyle</p>
+        <p className="loader__foot label">Nourish · Move · Live</p>
       </div>
     </div>
   );

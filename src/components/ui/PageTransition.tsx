@@ -5,15 +5,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { gsap } from "@/lib/gsap";
 import { scrollTop } from "@/lib/lenis";
 
-const DEPARTMENTS = ["nutrition", "fitness", "lifestyle"];
-
 function labelFor(path: string) {
-  const seg = path.split("/").filter(Boolean)[0] ?? "";
-  if (!seg) return "Lishe";
-  if (DEPARTMENTS.includes(seg)) return seg[0].toUpperCase() + seg.slice(1);
-  if (seg === "stories") return "Reading";
-  if (seg === "experts") return "Voices";
-  if (seg === "search") return "Search";
+  const [a, b] = path.split("/").filter(Boolean);
+  if (!a) return "Lishe";
+  if (a === "explore") return b ? b[0].toUpperCase() + b.slice(1) : "Explore";
+  if (a === "stories") return "Reading";
+  if (a === "our-story") return "Our Story";
+  if (a === "features") return "Features";
+  if (a === "contact") return "Contact";
+  if (a === "search") return "Search";
   return "Lishe";
 }
 

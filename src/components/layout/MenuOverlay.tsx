@@ -5,9 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import ThemeSwitch from "@/components/ui/ThemeSwitch";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { NAV } from "@/lib/nav";
 import type { MenuItem } from "@/lib/menu";
 
-const SECONDARY = ["Instagram", "YouTube", "Facebook", "Advertise", "Collaborate", "Contact"];
+const PAGES = NAV.filter((n) => !n.mega);
+const SECONDARY = ["Instagram", "YouTube", "Facebook", "Advertise", "Collaborate"];
 
 export default function MenuOverlay({
   open,
@@ -23,7 +25,6 @@ export default function MenuOverlay({
   const shown = useRef(false);
   const [active, setActive] = useState(0);
 
-  // cursor-following photo: desktop with a mouse only
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
@@ -77,7 +78,6 @@ export default function MenuOverlay({
     { scope: root }
   );
 
-  // closing the menu always hides the floating photo
   useEffect(() => {
     if (open) return;
     shown.current = false;
@@ -94,20 +94,33 @@ export default function MenuOverlay({
       data-lenis-prevent
     >
       <div className="menu__inner wrap">
-        <ul className="menu__links">
-          {items.map((l, i) => (
-            <li
-              key={l.href}
-              style={{ transitionDelay: open ? `${0.25 + i * 0.07}s` : "0s" }}
-              onMouseEnter={() => setActive(i)}
-            >
-              <Link href={l.href} onClick={onNavigate} onFocus={() => setActive(i)}>
-                <span className="display display--xl">{l.label}</span>
-                <span className="menu__thumb" aria-hidden>
-                  {l.image && (
-                    <Image src={l.image.src} alt="" fill sizes="160px" style={{ objectFit: "cover" }} />
-                  )}
-                </span>
+        <div className="menu__group">
+          <span className="label menu__eyebrow">Explore</span>
+          <ul className="menu__links">
+            {items.map((l, i) => (
+              <li
+                key={l.href}
+                style={{ transitionDelay: open ? `${0.25 + i * 0.07}s` : "0s" }}
+                onMouseEnter={() => setActive(i)}
+              >
+                <Link href={l.href} onClick={onNavigate} onFocus={() => setActive(i)}>
+                  <span className="display display--xl">{l.label}</span>
+                  <span className="menu__thumb" aria-hidden>
+                    {l.image && (
+                      <Image src={l.image.src} alt="" fill sizes="160px" style={{ objectFit: "cover" }} />
+                    )}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <ul className="menu__pages">
+          {PAGES.map((p) => (
+            <li key={p.href}>
+              <Link href={p.href} onClick={onNavigate} className="menu__page">
+                {p.label}
               </Link>
             </li>
           ))}
@@ -125,7 +138,6 @@ export default function MenuOverlay({
         </ul>
       </div>
 
-      {/* floating photo that follows the cursor (desktop only) */}
       <div ref={float} className="menu__float" aria-hidden>
         {items.map((l, i) =>
           l.image ? (

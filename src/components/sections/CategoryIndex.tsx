@@ -93,10 +93,10 @@ export default function CategoryIndex({ items }: { items: DepartmentData[] }) {
   );
 
   return (
-    <section ref={root} className="cat" aria-label="Departments">
+    <section ref={root} className="cat" aria-label="Explore">
       <div className="wrap">
         <div className="cat__head label">
-          <span>Departments</span>
+          <span>Explore</span>
         </div>
 
         <ul className="cat__list">
@@ -106,7 +106,7 @@ export default function CategoryIndex({ items }: { items: DepartmentData[] }) {
 
             return (
               <li key={dept.key} className="cat__row">
-                <Link href={`/${dept.key}`} className="cat__link">
+                <Link href={`/explore/${dept.key}`} className="cat__link">
                   <span className="label cat__count">
                     {dept.topics.slice(0, 3).map((t) => (
                       <span key={t}>{t}</span>

@@ -11,7 +11,7 @@ export default async function Home() {
   const featured = posts[0];
   const rest = posts.filter((p) => p.id !== featured.id);
 
-  const fitness = departments.find((d) => d.dept.key === "fitness");
+  const fitness = departments.find((d) => d.dept.key === "move");
 
   return (
     <main>
@@ -21,8 +21,8 @@ export default async function Home() {
 
       {fitness && fitness.posts.length > 0 && (
         <CategoryFeature
-          deptKey="fitness"
-          label="Fitness"
+          deptKey="move"
+          label="Move"
           headline={["Move", "better.", "Live", "stronger."]}
           featured={fitness.posts[0]}
           latest={fitness.posts.slice(1, 3)}

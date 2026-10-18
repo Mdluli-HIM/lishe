@@ -165,3 +165,26 @@
   }
   .menu__float-img.is-active { opacity: 1; transform: none; }
 }
+
+/* ---------- five-item nav: tighten between 900 and 1100px ---------- */
+@media (min-width: 900px) and (max-width: 1099px) {
+  .header__nav a { padding-inline: 9px; }
+  .header__nav a::after { left: 9px; right: 9px; }
+  .theme__text { display: none; }
+}
+
+/* ---------- full-screen menu: Explore group + page links ---------- */
+.menu__eyebrow { display: block; margin-bottom: 12px; opacity: 0.7; }
+.menu__pages { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 28px; }
+.menu__page {
+  display: inline-block;
+  min-height: 44px;
+  padding-block: 8px;
+  font-size: clamp(1.5rem, 5.4vw, 2.5rem);
+  letter-spacing: -0.03em;
+  transition: color 0.3s, opacity 0.4s var(--ease);
+}
+@media (hover: hover) {
+  .menu__page:hover { color: var(--accent); }
+  .menu__pages:hover .menu__page:not(:hover) { opacity: 0.35; }
+}

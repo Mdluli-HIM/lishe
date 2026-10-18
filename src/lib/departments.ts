@@ -23,15 +23,18 @@ async function getTerms(): Promise<Term[]> {
   }
 }
 
-const coverFor = (key: string) =>
-  firstExisting(["webp", "jpg", "jpeg", "png"].map((e) => `images/departments/${key}.${e}`));
+const coverFor = (d: Department) =>
+  firstExisting(
+    [d.key, d.legacy].flatMap((k) =>
+      ["webp", "jpg", "jpeg", "png"].map((e) => `images/departments/${k}.${e}`)
+    )
+  );
 
 export interface DepartmentData {
   dept: Department;
   count: number;
   posts: Post[];
   matched: boolean;
-  /** Your fixed cover photo from public/images/departments, or null */
   cover: string | null;
 }
 
@@ -40,7 +43,7 @@ export async function getDepartments(): Promise<DepartmentData[]> {
 
   return Promise.all(
     DEPARTMENTS.map(async (dept, i): Promise<DepartmentData> => {
-      const cover = coverFor(dept.key);
+      const cover = coverFor(dept);
       const hit = terms.filter((t) => dept.slugs.includes(t.slug));
       const count = hit.reduce((sum, t) => sum + t.count, 0);
 
@@ -63,4 +66,30 @@ export async function getDepartments(): Promise<DepartmentData[]> {
       return { dept, count: 0, posts: latest.slice(i * 3, i * 3 + 3), matched: false, cover };
     })
   );
+}
+
+/** All recent stories for one Explore section (Nourish, Move or Live). */
+export async function getDepartmentPosts(
+  key: string,
+  perPage = 24
+): Promise<{ dept: Department; posts: Post[] } | null> {
+  const dept = DEPARTMENTS.find((d) => d.key === key);
+  if (!dept) return null;
+
+  const terms = await getTerms();
+  const ids = terms.filter((t) => dept.slugs.includes(t.slug)).map((t) => t.id);
+  if (!ids.length) return { dept, posts: [] };
+
+  try {
+    const q = new URLSearchParams({
+      _embed: "1",
+      per_page: String(perPage),
+      categories: ids.join(","),
+    });
+    const res = await fetch(`${API}/posts?${q}`, { next: { revalidate: 600 } });
+    if (res.ok) return { dept, posts: (await res.json()).map(mapPost) };
+  } catch {
+    // fall through
+  }
+  return { dept, posts: [] };
 }
