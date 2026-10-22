@@ -34,7 +34,7 @@ export default function Offerings({ items, label = "Lishe Wellness offerings" }:
               <Link href={`/wellness/${o.key}`} className="of__link">
                 <span className="of__media" aria-hidden>
                   {o.image ? (
-                    <Image src={o.image.src} alt="" fill sizes="(min-width: 900px) 45vw, 100vw" style={{ objectFit: "cover" }} />
+                    <Image src={o.image.src} alt="" fill sizes="(min-width: 900px) 45vw, 100vw" style={{ objectFit: "cover", objectPosition: o.image.position }} />
                   ) : (
                     <span className="of__field" />
                   )}

@@ -16,15 +16,16 @@ export interface Offering {
   read: string;
   /** colour of the panel when no photo has been added yet */
   tone: string;
-  image: { src: string; alt: string } | null;
+  /** `position` is the focal point kept in frame when a photo is cropped */
+  image: { src: string; alt: string; position?: string } | null;
 }
 
 
 /** Put photos at public/images/wellness/<key>.(jpg|webp|png) and they replace the colour panel. */
-const photo = (key: string, alt: string, fallback?: string) => {
-  const src =
-    firstExisting(["webp", "jpg", "jpeg", "png"].map((e) => `images/wellness/${key}.${e}`)) ?? fallback;
-  return src ? { src, alt } : null;
+const photo = (key: string, alt: string, fallback?: { src: string; position: string }) => {
+  const own = firstExisting(["webp", "jpg", "jpeg", "png"].map((e) => `images/wellness/${key}.${e}`));
+  if (own) return { src: own, alt };
+  return fallback ? { src: fallback.src, alt, position: fallback.position } : null;
 };
 
 export const OFFERINGS: Offering[] = [
@@ -74,7 +75,7 @@ export const OFFERINGS: Offering[] = [
     cta: { label: "Enquire about Pilates", topic: "pilates" },
     read: "Pilates",
     tone: "#8a7a62",
-    image: photo("pilates", "Pilates movement", HERO_IMAGE.src),
+    image: photo("pilates", "Pilates movement", { src: HERO_IMAGE.src, position: "68% 50%" }),
   },
 ];
 

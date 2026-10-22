@@ -117,7 +117,7 @@ export default function MenuOverlay({
                           <span className="display display--xl">{l.label}</span>
                           <span className="menu__thumb" aria-hidden style={l.tone ? { background: l.tone } : undefined}>
                             {l.image && (
-                              <Image src={l.image.src} alt="" fill sizes="160px" style={{ objectFit: "cover" }} />
+                              <Image src={l.image.src} alt="" fill sizes="160px" style={{ objectFit: "cover", objectPosition: l.image.position }} />
                             )}
                           </span>
                         </Link>
@@ -160,7 +160,7 @@ export default function MenuOverlay({
         {items.map((l, i) =>
           l.image ? (
             <div key={l.href} className={`menu__float-img ${active === i ? "is-active" : ""}`}>
-              <Image src={l.image.src} alt="" fill sizes="440px" style={{ objectFit: "cover" }} />
+              <Image src={l.image.src} alt="" fill sizes="440px" style={{ objectFit: "cover", objectPosition: l.image.position }} />
             </div>
           ) : null
         )}

@@ -82,7 +82,7 @@ export default function MegaMenu({
                 >
                   <span className="mega__img">
                     {o.image ? (
-                      <Image src={o.image.src} alt={o.image.alt} fill sizes="320px" style={{ objectFit: "cover" }} />
+                      <Image src={o.image.src} alt={o.image.alt} fill sizes="320px" style={{ objectFit: "cover", objectPosition: o.image.position }} />
                     ) : (
                       <span className="mega__swatch display" aria-hidden>
                         {o.label}

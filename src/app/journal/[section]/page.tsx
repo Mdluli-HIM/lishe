@@ -58,7 +58,7 @@ export default async function SectionPage({ params }: Props) {
             <li key={o.key}>
               <Link href={`/wellness/${o.key}`} className="xw__card" style={{ ["--tone" as string]: o.tone }}>
                 <span className="xw__swatch" aria-hidden>
-                  {o.image && <Image src={o.image.src} alt="" fill sizes="160px" style={{ objectFit: "cover" }} />}
+                  {o.image && <Image src={o.image.src} alt="" fill sizes="160px" style={{ objectFit: "cover", objectPosition: o.image.position }} />}
                 </span>
                 <span className="xw__name">{o.label}</span>
                 <span className="label xw__go">→</span>

@@ -44,7 +44,7 @@ export default async function OfferingPage({ params }: Props) {
       <section className="ofp wrap" style={{ ["--tone" as string]: o.tone }}>
         <div className="ofp__media">
           {o.image ? (
-            <Image src={o.image.src} alt={o.image.alt} fill priority sizes="(min-width: 900px) 55vw, 100vw" style={{ objectFit: "cover" }} />
+            <Image src={o.image.src} alt={o.image.alt} fill priority sizes="(min-width: 900px) 55vw, 100vw" style={{ objectFit: "cover", objectPosition: o.image.position }} />
           ) : (
             <span className="ofp__field display" aria-hidden>
               {o.label}

@@ -5,7 +5,7 @@ import { OFFERINGS } from "@/lib/wellness";
 export interface MenuItem {
   href: string;
   label: string;
-  image: { src: string; alt: string } | null;
+  image: { src: string; alt: string; position?: string } | null;
   /** colour shown when there is no photo */
   tone?: string;
 }
