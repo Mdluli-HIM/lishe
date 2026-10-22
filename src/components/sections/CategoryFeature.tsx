@@ -65,7 +65,7 @@ export default function CategoryFeature({
       <div className="wrap">
         <div className="cf__head label">
           <span>{label}</span>
-          <Link href={`/explore/${deptKey}`} className="cf__all">
+          <Link href={`/journal/${deptKey}`} className="cf__all">
             Explore {label} →
           </Link>
         </div>

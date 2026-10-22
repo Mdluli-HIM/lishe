@@ -8,7 +8,15 @@ import { getLenis } from "@/lib/lenis";
 import { shortDate } from "@/lib/format";
 import type { Post } from "@/types/post";
 
-export default function StoryStage({ posts }: { posts: Post[] }) {
+export default function StoryStage({
+  posts,
+  label = "Featured stories",
+  more,
+}: {
+  posts: Post[];
+  label?: string;
+  more?: { href: string; label: string };
+}) {
   const root = useRef<HTMLElement>(null);
   const scroll = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -64,8 +72,14 @@ export default function StoryStage({ posts }: { posts: Post[] }) {
     <section ref={root} className="st" aria-label="Featured stories">
       <div className="wrap">
         <div className="st__head label">
-          <span>Featured stories</span>
-          <span>Scroll ↓</span>
+          <span>{label}</span>
+          {more ? (
+            <Link href={more.href} className="st__all">
+              {more.label}
+            </Link>
+          ) : (
+            <span>Scroll ↓</span>
+          )}
         </div>
       </div>
 

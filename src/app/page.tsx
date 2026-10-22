@@ -1,34 +1,36 @@
-import Hero from "@/components/sections/Hero";
-import CategoryIndex from "@/components/sections/CategoryIndex";
+import BrandHero from "@/components/sections/BrandHero";
+import SideBand from "@/components/sections/SideBand";
 import StoryStage from "@/components/sections/StoryStage";
-import CategoryFeature from "@/components/sections/CategoryFeature";
-import { getPosts } from "@/lib/wp";
+import CategoryIndex from "@/components/sections/CategoryIndex";
+import Offerings from "@/components/sections/Offerings";
+import StoryLine from "@/components/sections/StoryLine";
 import { getDepartments } from "@/lib/departments";
+import { getFeatures } from "@/lib/features";
+import { OFFERINGS } from "@/lib/wellness";
 import { HERO_IMAGE } from "@/lib/site";
 
 export default async function Home() {
-  const [posts, departments] = await Promise.all([getPosts({ perPage: 12 }), getDepartments()]);
-  const featured = posts[0];
-  const rest = posts.filter((p) => p.id !== featured.id);
-
-  const fitness = departments.find((d) => d.dept.key === "move");
+  const [features, departments] = await Promise.all([getFeatures(5), getDepartments()]);
+  const live = departments.find((d) => d.dept.key === "live")?.cover;
+  const journalImage = live ? { src: live, alt: "" } : (features[0]?.image ?? null);
 
   return (
     <main>
-      <Hero post={featured} image={HERO_IMAGE} />
-      <CategoryIndex items={departments} />
-      <StoryStage posts={rest.slice(0, 5)} />
+      <BrandHero
+        doors={[
+          { side: "wellness", image: HERO_IMAGE, items: OFFERINGS.map((o) => o.label) },
+          { side: "journal", image: journalImage, items: ["Nourish", "Move", "Live", "Features"] },
+        ]}
+      />
 
-      {fitness && fitness.posts.length > 0 && (
-        <CategoryFeature
-          deptKey="move"
-          label="Move"
-          headline={["Move", "better.", "Live", "stronger."]}
-          featured={fitness.posts[0]}
-          latest={fitness.posts.slice(1, 3)}
-          topics={["Pilates", "Training", "Running", "Strength", "Recovery"]}
-        />
-      )}
+      <SideBand side="wellness" />
+      <Offerings items={OFFERINGS} />
+
+      <SideBand side="journal" />
+      <StoryStage posts={features} label="Journal / Features" more={{ href: "/journal/features", label: "All features →" }} />
+      <CategoryIndex items={departments} />
+
+      <StoryLine />
     </main>
   );
 }

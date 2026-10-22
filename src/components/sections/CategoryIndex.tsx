@@ -6,7 +6,13 @@ import Link from "next/link";
 import { gsap, useGSAP } from "@/lib/gsap";
 import type { DepartmentData } from "@/lib/departments";
 
-export default function CategoryIndex({ items }: { items: DepartmentData[] }) {
+export default function CategoryIndex({
+  items,
+  label = "Journal / Sections",
+}: {
+  items: DepartmentData[];
+  label?: string;
+}) {
   const root = useRef<HTMLElement>(null);
   const float = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -93,10 +99,10 @@ export default function CategoryIndex({ items }: { items: DepartmentData[] }) {
   );
 
   return (
-    <section ref={root} className="cat" aria-label="Explore">
+    <section ref={root} className="cat" aria-label="Journal sections">
       <div className="wrap">
         <div className="cat__head label">
-          <span>Explore</span>
+          <span>{label}</span>
         </div>
 
         <ul className="cat__list">
@@ -106,7 +112,7 @@ export default function CategoryIndex({ items }: { items: DepartmentData[] }) {
 
             return (
               <li key={dept.key} className="cat__row">
-                <Link href={`/explore/${dept.key}`} className="cat__link">
+                <Link href={`/journal/${dept.key}`} className="cat__link">
                   <span className="label cat__count">
                     {dept.topics.slice(0, 3).map((t) => (
                       <span key={t}>{t}</span>

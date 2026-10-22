@@ -1,14 +1,16 @@
+export type MegaKey = "journal" | "wellness";
+
 export interface NavItem {
   label: string;
   href: string;
-  /** opens the Explore hover panel */
-  mega?: boolean;
+  /** opens that side's hover panel */
+  mega?: MegaKey;
 }
 
 export const NAV: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Our Story", href: "/our-story" },
-  { label: "Explore", href: "/explore", mega: true },
-  { label: "Features", href: "/features" },
+  { label: "Wellness", href: "/wellness", mega: "wellness" },
+  { label: "Journal", href: "/journal", mega: "journal" },
   { label: "Contact", href: "/contact" },
 ];

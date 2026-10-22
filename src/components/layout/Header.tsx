@@ -3,31 +3,34 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import MenuOverlay from "./MenuOverlay";
-import MegaMenu from "./MegaMenu";
+import MegaMenu, { type JournalSection, type WellnessCard } from "./MegaMenu";
 import ThemeSwitch from "@/components/ui/ThemeSwitch";
-import { NAV } from "@/lib/nav";
-import type { DepartmentData } from "@/lib/departments";
-import type { MenuItem } from "@/lib/menu";
+import { NAV, type MegaKey } from "@/lib/nav";
+import type { MenuGroups } from "@/lib/menu";
 
 export default function Header({
-  departments,
-  menuItems,
+  journal,
+  wellness,
+  menu,
 }: {
-  departments: DepartmentData[];
-  menuItems: MenuItem[];
+  journal: JournalSection[];
+  wellness: WellnessCard[];
+  menu: MenuGroups;
 }) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [mega, setMega] = useState(false);
+  const [mega, setMega] = useState<MegaKey | null>(null);
   const timer = useRef<number | undefined>(undefined);
 
-  const show = (v: boolean) => {
+  const show = (v: MegaKey | null) => {
     window.clearTimeout(timer.current);
     setMega(v);
   };
   const hideSoon = () => {
     window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setMega(false), 160);
+    timer.current = window.setTimeout(() => setMega(null), 160);
   };
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export default function Header({
     const esc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
-        setMega(false);
+        setMega(null);
       }
     };
     window.addEventListener("keydown", esc);
@@ -43,6 +46,9 @@ export default function Header({
   }, [open]);
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  const current = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <>
@@ -64,7 +70,7 @@ export default function Header({
               aria-label="Lishe home"
               onClick={() => {
                 setOpen(false);
-                show(false);
+                show(null);
               }}
             >
               <Image className="header__logo-dark" src="/images/brand/logo-lishe.png" alt="Lishe" width={1774} height={887} priority />
@@ -76,18 +82,22 @@ export default function Header({
                 <Link
                   key={n.href}
                   href={n.href}
-                  className={n.mega && mega ? "is-active" : ""}
+                  data-side={n.mega}
+                  className={(n.mega && mega === n.mega) || (!mega && current(n.href)) ? "is-active" : ""}
+                  aria-current={current(n.href) ? "page" : undefined}
                   aria-haspopup={n.mega ? "true" : undefined}
-                  aria-expanded={n.mega ? mega : undefined}
-                  onMouseEnter={() => show(!!n.mega)}
-                  onFocus={() => show(!!n.mega)}
+                  aria-expanded={n.mega ? mega === n.mega : undefined}
+                  onMouseEnter={() => show(n.mega ?? null)}
+                  onFocus={() => show(n.mega ?? null)}
+                  onClick={() => show(null)}
                 >
                   {n.label}
+                  {n.mega && <span className="header__caret" aria-hidden />}
                 </Link>
               ))}
             </nav>
 
-            <div className="header__right" onMouseEnter={() => show(false)}>
+            <div className="header__right" onMouseEnter={() => show(null)}>
               <div className="header__theme">
                 <ThemeSwitch />
               </div>
@@ -96,7 +106,7 @@ export default function Header({
                 aria-expanded={open}
                 aria-controls="menu-overlay"
                 onClick={() => {
-                  show(false);
+                  show(null);
                   setOpen((v) => !v);
                 }}
               >
@@ -106,10 +116,10 @@ export default function Header({
           </div>
         </header>
 
-        {!open && <MegaMenu items={departments} open={mega} onNavigate={() => show(false)} />}
+        {!open && <MegaMenu journal={journal} wellness={wellness} open={mega} onNavigate={() => show(null)} />}
       </div>
 
-      <MenuOverlay open={open} items={menuItems} onNavigate={() => setOpen(false)} />
+      <MenuOverlay open={open} groups={menu} onNavigate={() => setOpen(false)} />
     </>
   );
 }

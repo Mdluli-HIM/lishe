@@ -9,10 +9,13 @@ export interface Department {
   legacy: string;
 }
 
-export const EXPLORE_INTRO = {
+/** Journal intro, worded by the client. */
+export const JOURNAL_INTRO = {
   title: "Explore Wellness",
   text: "Discover the stories, knowledge, and practices that nurture balanced living.",
 };
+
+export const sectionHref = (key: string) => `/journal/${key}`;
 
 export const DEPARTMENTS: Department[] = [
   {
@@ -44,3 +47,6 @@ export const DEPARTMENTS: Department[] = [
 /** Never shown anywhere on the site (spam + empty bucket). */
 export const EXCLUDED_CATEGORY_IDS = [29, 30, 28];
 export const EXCLUDED_CATEGORY_SLUGS = ["uncategorized", "mostbet-az-90", "mostbet-apk", "mostbet-uz"];
+
+/** older name, kept so existing imports still work */
+export const EXPLORE_INTRO = JOURNAL_INTRO;

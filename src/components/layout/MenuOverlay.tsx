@@ -6,20 +6,22 @@ import Link from "next/link";
 import ThemeSwitch from "@/components/ui/ThemeSwitch";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { NAV } from "@/lib/nav";
-import type { MenuItem } from "@/lib/menu";
+import { SIDES, SOCIAL } from "@/lib/brand";
+import type { MenuGroups } from "@/lib/menu";
 
 const PAGES = NAV.filter((n) => !n.mega);
-const SECONDARY = ["Instagram", "YouTube", "Facebook", "Advertise", "Collaborate"];
+const GROUPS = ["wellness", "journal"] as const;
 
 export default function MenuOverlay({
   open,
   onNavigate,
-  items,
+  groups,
 }: {
   open: boolean;
   onNavigate: () => void;
-  items: MenuItem[];
+  groups: MenuGroups;
 }) {
+  const items = GROUPS.flatMap((g) => groups[g]);
   const root = useRef<HTMLDivElement>(null);
   const float = useRef<HTMLDivElement>(null);
   const shown = useRef(false);
@@ -31,7 +33,7 @@ export default function MenuOverlay({
 
       mm.add("(min-width: 900px) and (hover: hover)", () => {
         const el = float.current;
-        const list = root.current?.querySelector<HTMLElement>(".menu__links");
+        const list = root.current?.querySelector<HTMLElement>(".menu__sides");
         if (!el || !list) return;
 
         gsap.set(el, { xPercent: -50, yPercent: -50, autoAlpha: 0, scale: 0.8 });
@@ -94,26 +96,38 @@ export default function MenuOverlay({
       data-lenis-prevent
     >
       <div className="menu__inner wrap">
-        <div className="menu__group">
-          <span className="label menu__eyebrow">Explore</span>
-          <ul className="menu__links">
-            {items.map((l, i) => (
-              <li
-                key={l.href}
-                style={{ transitionDelay: open ? `${0.25 + i * 0.07}s` : "0s" }}
-                onMouseEnter={() => setActive(i)}
-              >
-                <Link href={l.href} onClick={onNavigate} onFocus={() => setActive(i)}>
-                  <span className="display display--xl">{l.label}</span>
-                  <span className="menu__thumb" aria-hidden>
-                    {l.image && (
-                      <Image src={l.image.src} alt="" fill sizes="160px" style={{ objectFit: "cover" }} />
-                    )}
-                  </span>
+        <div className="menu__sides">
+          {GROUPS.map((g, gi) => {
+            const offset = gi === 0 ? 0 : groups[GROUPS[0]].length;
+            return (
+              <div key={g} className="menu__group" data-side={g}>
+                <Link href={SIDES[g].href} onClick={onNavigate} className="label menu__eyebrow">
+                  {SIDES[g].name} <span>/ {SIDES[g].role}</span>
                 </Link>
-              </li>
-            ))}
-          </ul>
+                <ul className="menu__links">
+                  {groups[g].map((l, i) => {
+                    const k = offset + i;
+                    return (
+                      <li
+                        key={l.href}
+                        style={{ transitionDelay: open ? `${0.25 + k * 0.06}s` : "0s" }}
+                        onMouseEnter={() => setActive(k)}
+                      >
+                        <Link href={l.href} onClick={onNavigate} onFocus={() => setActive(k)}>
+                          <span className="display display--xl">{l.label}</span>
+                          <span className="menu__thumb" aria-hidden style={l.tone ? { background: l.tone } : undefined}>
+                            {l.image && (
+                              <Image src={l.image.src} alt="" fill sizes="160px" style={{ objectFit: "cover" }} />
+                            )}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
         </div>
 
         <ul className="menu__pages">
@@ -132,8 +146,12 @@ export default function MenuOverlay({
         </div>
 
         <ul className="menu__meta label">
-          {SECONDARY.map((s) => (
-            <li key={s}>{s}</li>
+          {SOCIAL.map((s) => (
+            <li key={s.href}>
+              <a href={s.href} target="_blank" rel="noopener noreferrer">
+                {s.label}
+              </a>
+            </li>
           ))}
         </ul>
       </div>

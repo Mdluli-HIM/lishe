@@ -38,7 +38,7 @@ export function mapPost(p: any): Post {
   const terms: Term[] = p._embedded?.["wp:term"]?.[0] ?? [];
   const term = terms.find((t) => !EXCLUDED_CATEGORY_SLUGS.includes(t.slug));
   const words = strip(p.content?.rendered ?? "").split(/\s+/).length;
-  const title = strip(p.title.rendered);
+  const title = strip(p.title.rendered).replace(/\s*[|–-]\s*Lishe$/i, "");
 
   const local = localStoryImage(p.slug);
 
@@ -46,7 +46,7 @@ export function mapPost(p: any): Post {
     id: p.id,
     slug: p.slug,
     title,
-    excerpt: strip(p.excerpt.rendered),
+    excerpt: strip(p.excerpt.rendered).replace(/\s*\[(…|\.\.\.)\]\s*$/, "…"),
     date: p.date,
     category: term ? strip(term.name) : "Lifestyle",
     image: local
@@ -62,6 +62,62 @@ export function mapPost(p: any): Post {
     readingMinutes: Math.max(1, Math.round(words / 220)),
   };
 }
+
+async function fetchPosts(q: URLSearchParams, revalidate = 600): Promise<Post[]> {
+  try {
+    const res = await fetch(`${API}/posts?${q}`, { next: { revalidate } });
+    if (!res.ok) return [];
+    return ((await res.json()) as unknown[]).map(mapPost);
+  } catch {
+    return [];
+  }
+}
+
+export function getPostsBySlugs(slugs: string[]): Promise<Post[]> {
+  if (!slugs.length) return Promise.resolve([]);
+  return fetchPosts(
+    new URLSearchParams({ _embed: "1", per_page: String(Math.min(100, slugs.length)), slug: slugs.join(",") }),
+    3600
+  );
+}
+
+export function searchPosts(term: string, perPage = 24): Promise<Post[]> {
+  return fetchPosts(
+    new URLSearchParams({
+      _embed: "1",
+      per_page: String(perPage),
+      search: term,
+      categories_exclude: EXCLUDED_CATEGORY_IDS.join(","),
+    })
+  );
+}
+
+export interface Article extends Post {
+  html: string;
+}
+
+/** One full story, including its body HTML from WordPress. */
+export async function getArticle(slug: string): Promise<Article | null> {
+  try {
+    const q = new URLSearchParams({ _embed: "1", slug });
+    const res = await fetch(`${API}/posts?${q}`, { next: { revalidate: 600 } });
+    if (!res.ok) return null;
+    const [raw] = await res.json();
+    if (!raw) return null;
+    return { ...mapPost(raw), html: cleanBody(raw.content?.rendered ?? "") };
+  } catch {
+    return null;
+  }
+}
+
+/** Drops scripts, inline styles and empty paragraphs left by the old theme's editor. */
+const cleanBody = (html: string) =>
+  html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/\sstyle="[^"]*"/gi, "")
+    .replace(/\son[a-z]+="[^"]*"/gi, "")
+    .replace(/<p>(\s|&nbsp;)*<\/p>/gi, "");
 
 export async function getPosts(params: { perPage?: number; category?: number } = {}): Promise<Post[]> {
   try {

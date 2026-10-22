@@ -8,10 +8,10 @@ import { scrollTop } from "@/lib/lenis";
 function labelFor(path: string) {
   const [a, b] = path.split("/").filter(Boolean);
   if (!a) return "Lishe";
-  if (a === "explore") return b ? b[0].toUpperCase() + b.slice(1) : "Explore";
+  if (a === "journal") return b ? b[0].toUpperCase() + b.slice(1) : "Journal";
   if (a === "stories") return "Reading";
   if (a === "our-story") return "Our Story";
-  if (a === "features") return "Features";
+  if (a === "wellness") return "Wellness";
   if (a === "contact") return "Contact";
   if (a === "search") return "Search";
   return "Lishe";
